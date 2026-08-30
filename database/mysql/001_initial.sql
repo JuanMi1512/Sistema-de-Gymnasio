@@ -1,0 +1,22 @@
+CREATE DATABASE IF NOT EXISTS blue_fit CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+USE blue_fit;
+
+CREATE TABLE organizations (id CHAR(36) PRIMARY KEY, name VARCHAR(120) NOT NULL, ruc VARCHAR(20), timezone VARCHAR(50) NOT NULL DEFAULT 'America/Lima', currency CHAR(3) NOT NULL DEFAULT 'PEN', created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP, updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP);
+CREATE TABLE branches (id CHAR(36) PRIMARY KEY, organization_id CHAR(36) NOT NULL, name VARCHAR(120) NOT NULL, address VARCHAR(255), capacity INT UNSIGNED NOT NULL DEFAULT 0, is_active BOOLEAN NOT NULL DEFAULT TRUE, created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP, updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP, FOREIGN KEY (organization_id) REFERENCES organizations(id), INDEX idx_branch_org (organization_id));
+CREATE TABLE roles (id CHAR(36) PRIMARY KEY, organization_id CHAR(36), code VARCHAR(40) NOT NULL, name VARCHAR(80) NOT NULL, description VARCHAR(255), UNIQUE KEY uq_role_org_code (organization_id, code));
+CREATE TABLE permissions (id CHAR(36) PRIMARY KEY, code VARCHAR(80) NOT NULL UNIQUE, description VARCHAR(255));
+CREATE TABLE role_permissions (role_id CHAR(36) NOT NULL, permission_id CHAR(36) NOT NULL, PRIMARY KEY(role_id, permission_id), FOREIGN KEY(role_id) REFERENCES roles(id), FOREIGN KEY(permission_id) REFERENCES permissions(id));
+CREATE TABLE users (id CHAR(36) PRIMARY KEY, organization_id CHAR(36) NOT NULL, branch_id CHAR(36), role_id CHAR(36) NOT NULL, first_name VARCHAR(100) NOT NULL, last_name VARCHAR(100) NOT NULL, email VARCHAR(190) NOT NULL, phone VARCHAR(25), password_hash VARCHAR(255) NOT NULL, status ENUM('active','inactive','blocked') NOT NULL DEFAULT 'active', failed_attempts TINYINT UNSIGNED NOT NULL DEFAULT 0, locked_until DATETIME NULL, last_login_at DATETIME NULL, created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP, updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP, deleted_at DATETIME NULL, UNIQUE KEY uq_user_org_email (organization_id,email), FOREIGN KEY(organization_id) REFERENCES organizations(id), FOREIGN KEY(branch_id) REFERENCES branches(id), FOREIGN KEY(role_id) REFERENCES roles(id), INDEX idx_user_branch_status(branch_id,status));
+CREATE TABLE audit_logs (id CHAR(36) PRIMARY KEY, organization_id CHAR(36) NOT NULL, user_id CHAR(36), action VARCHAR(100) NOT NULL, entity VARCHAR(80) NOT NULL, entity_id CHAR(36), old_values JSON, new_values JSON, ip_address VARCHAR(45), created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP, FOREIGN KEY(organization_id) REFERENCES organizations(id), FOREIGN KEY(user_id) REFERENCES users(id), INDEX idx_audit_entity(entity,entity_id));
+
+INSERT INTO organizations (id,name,ruc) VALUES ('00000000-0000-4000-8000-000000000001','BLUE FIT',NULL);
+INSERT INTO branches (id,organization_id,name,address,capacity) VALUES ('00000000-0000-4000-8000-000000000002','00000000-0000-4000-8000-000000000001','Sede Principal','Lima, Perú',150);
+INSERT INTO roles (id,organization_id,code,name,description) VALUES
+('00000000-0000-4000-8000-000000000010','00000000-0000-4000-8000-000000000001','superadmin','Superadministrador','Control total'),
+('00000000-0000-4000-8000-000000000011','00000000-0000-4000-8000-000000000001','admin','Administrador','Administración de sede'),
+('00000000-0000-4000-8000-000000000012','00000000-0000-4000-8000-000000000001','receptionist','Recepcionista','Operación diaria'),
+('00000000-0000-4000-8000-000000000013','00000000-0000-4000-8000-000000000001','trainer','Entrenador','Clases y rutinas'),
+('00000000-0000-4000-8000-000000000014','00000000-0000-4000-8000-000000000001','client','Cliente','Portal del cliente');
+INSERT INTO permissions(id,code,description) VALUES (UUID(),'dashboard.view','Ver dashboard'),(UUID(),'users.manage','Gestionar usuarios'),(UUID(),'branches.manage','Gestionar sedes'),(UUID(),'members.view','Ver clientes'),(UUID(),'members.manage','Gestionar clientes');
+INSERT INTO role_permissions(role_id,permission_id) SELECT '00000000-0000-4000-8000-000000000010',id FROM permissions;
+INSERT INTO users(id,organization_id,branch_id,role_id,first_name,last_name,email,password_hash) VALUES ('00000000-0000-4000-8000-000000000100','00000000-0000-4000-8000-000000000001','00000000-0000-4000-8000-000000000002','00000000-0000-4000-8000-000000000010','Blue','Fit','admin@bluefit.local','$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhWy');

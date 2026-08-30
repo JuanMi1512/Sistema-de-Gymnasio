@@ -1,0 +1,34 @@
+@import url('https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700&family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@500;600;700;800&display=swap');
+
+/* Athletic visual layer: graphite surfaces, cold blue technology and performance lime. */
+:root { --blue: #2ea9ff; --blue-soft: #2ea9ff20; --lime: #bcff4d; --muted: #8793a3; }
+.brand { font-family: 'Barlow Condensed', sans-serif; font-size: 25px; letter-spacing: 3.5px; }
+.brand-mark { border-radius: 8px; transform: skewX(-7deg); }
+.brand-mark::first-letter { transform: skewX(7deg); }
+h1, .card-heading h2, .metric h2 { font-family: 'Manrope', sans-serif; }
+.eyebrow { color: #89a7bf; letter-spacing: 1.65px; }
+.content { background-image: linear-gradient(90deg, transparent 0, transparent calc(100% - 1px), rgba(255,255,255,.018) calc(100% - 1px)); }
+.glass-card { background: linear-gradient(145deg, rgba(29,34,41,.84), rgba(11,13,17,.76)); border-color: rgba(174,210,241,.13); box-shadow: 0 18px 45px rgba(0,0,0,.33), inset 0 1px rgba(255,255,255,.035); }
+.metric { position: relative; overflow: hidden; }
+.metric::after { content: ''; position: absolute; width: 60px; height: 60px; right: -26px; bottom: -30px; border: 1px solid rgba(87,180,255,.12); border-radius: 50%; }
+.metric-icon { border-radius: 10px; background: linear-gradient(145deg, rgba(57,172,255,.18), rgba(0,82,170,.11)); color: #78c9ff; }
+.metric:nth-child(2) .metric-icon { color: var(--lime); background: rgba(188,255,77,.09); border-color: rgba(188,255,77,.15); }
+.metric:nth-child(2) small b, .metric:nth-child(4) small b, .good { color: var(--lime); }
+.primary { border-radius: 9px; background: linear-gradient(135deg,#167fd6,#3cbaff); box-shadow: 0 10px 28px #0878dd42; }
+.nav-item { border-radius: 8px; }
+.nav-item.active { background: linear-gradient(90deg,rgba(46,169,255,.21),rgba(46,169,255,.04)); }
+.round-btn { border-radius: 9px; }
+.revenue { border-top: 1px solid rgba(74,178,255,.26); }
+.sessions,.members-card { border-top: 1px solid rgba(255,255,255,.15); }
+.session { border-bottom: 1px solid rgba(255,255,255,.045); }
+.session:last-child { border-bottom: 0; }
+.session-dot { box-shadow: 0 0 15px rgba(46,169,255,.5); }
+.attendees { color: #c1cedb; background: rgba(255,255,255,.055); }
+.active-pill { color: #182600; background: var(--lime); }
+.pending { color: #c5d3df; background: rgba(126,159,186,.17); }
+.spotlight { background: linear-gradient(135deg, #09131c, #0b4d81); border-color: rgba(101,195,255,.38); }
+.spotlight h2 { font-family: 'Barlow Condensed', sans-serif; font-size: 31px; font-weight: 600; letter-spacing: .1px; line-height: 1.02; text-transform: uppercase; }
+.spotlight button { border-radius: 7px; font-weight: 700; }
+.profile-avatar { box-shadow: 0 0 0 2px rgba(46,169,255,.12); }
+
+@media (max-width:720px) { .brand { font-size: 22px; } .spotlight h2 { font-size: 28px; } }
